@@ -61,7 +61,7 @@
                     <i data-lucide="calendar" class="w-5 h-5"></i> 保活タイムライン
                 </button>
                 <button onclick="switchPage('diagnostic')" class="nav-item flex items-center gap-3 p-3 rounded-xl text-left font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">
-                    <i data-lucide="sparkles" class="w-5 h-5"></i> あったか状況診断
+                    <i data-lucide="sparkles" class="w-5 h-5"></i> 状況診断
                 </button>
                 <button onclick="switchPage('chat')" class="nav-item flex items-center gap-3 p-3 rounded-xl text-left font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">
                     <i data-lucide="message-square" class="w-5 h-5"></i> 3人のAIパートナー
@@ -114,28 +114,8 @@
                     </h3>
                     <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-full">6月：準備期</span>
                 </div>
-                <div class="space-y-3">
-                    <label class="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-dashed border-slate-200 cursor-pointer">
-                        <input type="checkbox" class="mt-1 w-4 h-4 rounded-sm text-amber-500 border-slate-300 focus:ring-amber-400">
-                        <div class="text-xs">
-                            <p class="font-bold text-slate-800">おやこ保活ナビをスマホのホーム画面に追加する</p>
-                            <p class="text-slate-400 text-[10px] mt-0.5">いつでもワンタップで開けるように準備！</p>
-                        </div>
-                    </label>
-                    <label class="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-dashed border-slate-200 cursor-pointer">
-                        <input type="checkbox" class="mt-1 w-4 h-4 rounded-sm text-amber-500 border-slate-300 focus:ring-amber-400">
-                        <div class="text-xs">
-                            <p class="font-bold text-slate-800">「あったか状況診断」をやってみる</p>
-                            <p class="text-slate-400 text-[10px] mt-0.5">わからない項目があっても全然大丈夫ルン！</p>
-                        </div>
-                    </label>
-                    <label class="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-dashed border-slate-200 cursor-pointer">
-                        <input type="checkbox" class="mt-1 w-4 h-4 rounded-sm text-amber-500 border-slate-300 focus:ring-amber-400">
-                        <div class="text-xs">
-                            <p class="font-bold text-slate-800">パートナーのキャラクターを選んでみる</p>
-                            <p class="text-slate-400 text-[10px] mt-0.5">下のパートナー切り替えからお気に入りを見つけてね！</p>
-                        </div>
-                    </label>
+                <div id="homeTodoList" class="space-y-3">
+                    <!-- JavaScriptから動的にレンダリングされます -->
                 </div>
             </div>
 
@@ -143,7 +123,7 @@
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="switchPage('diagnostic')" class="p-4 bg-rose-50 hover:bg-rose-100/80 border border-rose-100 rounded-2xl text-left transition-colors">
                     <span class="text-2xl">🔍</span>
-                    <h4 class="font-black text-rose-800 text-sm mt-2">あったか状況診断</h4>
+                    <h4 class="font-black text-rose-800 text-sm mt-2">状況診断</h4>
                     <p class="text-slate-500 text-[10px] mt-1">「わからない」でも大丈夫。優しくアドバイス！</p>
                 </button>
                 <button onclick="switchPage('timeline')" class="p-4 bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-100 rounded-2xl text-left transition-colors">
@@ -244,7 +224,7 @@
                     <i data-lucide="edit-3" class="w-4 h-4 text-amber-700"></i>
                     マイ保活メモ・カスタムToDo 📝
                 </h4>
-                <p class="text-[11px] text-slate-500">見学する園の名前や、自分だけのやることメモを自由に追加してね！</p>
+                <p class="text-[11px] text-slate-500">見学する園の名前や、自分だけのやることメモを自由に追加してね！自動でホーム画面にも追加されるよ！</p>
                 
                 <!-- メモ追加フォーム -->
                 <div class="flex gap-2">
@@ -256,13 +236,7 @@
 
                 <!-- メモリスト表示エリア -->
                 <div id="customTodoList" class="space-y-2 mt-2 max-h-48 overflow-y-auto">
-                    <!-- 初期値 -->
-                    <div class="flex items-center justify-between p-2.5 bg-white/85 rounded-xl border border-amber-100 text-xs">
-                        <span class="text-slate-700">💡 〇〇市役所の保育課の電話番号をメモる</span>
-                        <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-rose-500">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
-                    </div>
+                    <!-- JavaScriptから動的にレンダリングされます -->
                 </div>
             </div>
         </section>
@@ -535,6 +509,13 @@
         // タイムライン設定管理
         let currentSeason = 'april';
 
+        // 動的なやることToDo状態管理（初期値をセット）
+        let todoList = [
+            { id: 'init-1', text: "おやこ保活ナビをスマホのホーム画面に追加する", subtext: "いつでもワンタップで開けるように準備！", completed: false, isDefault: true },
+            { id: 'init-2', text: "「あったか状況診断」をやってみる", subtext: "妊婦さん向けのやさしいアドバイスも貰えるよ！", completed: false, isDefault: true },
+            { id: 'init-3', text: "パートナーのキャラクターを選んでみる", subtext: "下のパートナー切り替えからお気に入りを見つけてね！", completed: false, isDefault: true }
+        ];
+
         // DOM要素の読み込み完了時
         window.onload = function() {
             // Lucideアイコンの初期化
@@ -558,6 +539,9 @@
                     sidebar.classList.add('hidden');
                 }
             });
+
+            // ToDoリストの初期描画
+            renderTodos();
 
             // チャット初期化
             initChat();
@@ -829,28 +813,96 @@
             }
         }
 
+        // ToDoリストを描画する関数
+        function renderTodos() {
+            const homeListEl = document.getElementById('homeTodoList');
+            const customListEl = document.getElementById('customTodoList');
+
+            // 1. ホーム画面のToDoリストを描画
+            homeListEl.innerHTML = "";
+            todoList.forEach(todo => {
+                const checkedAttr = todo.completed ? "checked" : "";
+                const textStyle = todo.completed ? "line-through text-slate-400 font-medium" : "text-slate-800 font-bold";
+                const subtextHtml = todo.subtext ? `<p class="text-slate-400 text-[10px] mt-0.5">${todo.subtext}</p>` : '';
+
+                const itemHtml = `
+                    <label class="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-all border border-dashed ${todo.completed ? 'border-slate-100 bg-slate-50/50' : 'border-slate-200'} cursor-pointer">
+                        <input type="checkbox" onchange="toggleTodo('${todo.id}')" ${checkedAttr} class="mt-1 w-4 h-4 rounded-sm text-amber-500 border-slate-300 focus:ring-amber-400">
+                        <div class="text-xs">
+                            <p class="${textStyle}">${todo.text}</p>
+                            ${subtextHtml}
+                        </div>
+                    </label>
+                `;
+                homeListEl.insertAdjacentHTML('beforeend', itemHtml);
+            });
+
+            // 2. タイムラインの「マイToDoリスト」を描画（自分で追加したやつだけ表示）
+            customListEl.innerHTML = "";
+            const customTodos = todoList.filter(todo => !todo.isDefault);
+
+            if (customTodos.length === 0) {
+                customListEl.innerHTML = `
+                    <p class="text-[11px] text-slate-400 text-center py-4">追加されたカスタムメモはありませんルン！</p>
+                `;
+            } else {
+                customTodos.forEach(todo => {
+                    const checkedClass = todo.completed ? "line-through text-slate-400" : "text-slate-700";
+                    const itemHtml = `
+                        <div class="flex items-center justify-between p-2.5 bg-white/85 rounded-xl border border-amber-100 text-xs page-fade">
+                            <span class="${checkedClass}">📌 ${todo.text}</span>
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleTodo('${todo.id}')" class="p-1 hover:bg-amber-100 rounded-lg text-slate-400 hover:text-amber-600" title="完了/未完了を切替">
+                                    <i data-lucide="${todo.completed ? 'rotate-ccw' : 'check'}" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="deleteTodo('${todo.id}')" class="p-1 hover:bg-rose-50 rounded-lg text-slate-400 hover:text-rose-500" title="削除">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    customListEl.insertAdjacentHTML('beforeend', itemHtml);
+                });
+            }
+
+            // Lucideアイコンを再ロード
+            lucide.createIcons();
+        }
+
+        // ToDoの完了チェック切り替え
+        function toggleTodo(id) {
+            const todo = todoList.find(t => t.id === id);
+            if (todo) {
+                todo.completed = !todo.completed;
+                renderTodos();
+            }
+        }
+
         // マイToDoにカスタム項目を追加
         function addCustomTodo() {
             const input = document.getElementById('customTodoInput');
             const text = input.value.trim();
             if (!text) return;
 
-            const list = document.getElementById('customTodoList');
-            
-            const itemHtml = `
-                <div class="flex items-center justify-between p-2.5 bg-white/85 rounded-xl border border-amber-100 text-xs page-fade">
-                    <span class="text-slate-700">📌 ${text}</span>
-                    <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-rose-500">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `;
-            
-            list.insertAdjacentHTML('afterbegin', itemHtml);
+            const newTodo = {
+                id: 'todo-' + Date.now(),
+                text: text,
+                subtext: "タイムラインから追加されたメモ 📝",
+                completed: false,
+                isDefault: false
+            };
+
+            todoList.push(newTodo);
             input.value = "";
             
-            // アイコン再描画
-            lucide.createIcons();
+            // 描画を更新
+            renderTodos();
+        }
+
+        // ToDoの削除
+        function deleteTodo(id) {
+            todoList = todoList.filter(t => t.id !== id);
+            renderTodos();
         }
 
         // チャットでのメッセージ送信
