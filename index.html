@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>おやこ保活ナビ - やさしく寄り添う保活サポート</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300;400;500&family=Zen+Maru+Gothic:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Zen Maru Gothic', 'Kiwi Maru', sans-serif;
+            background-color: #FFFDF9;
+        }
+        /* スムーズな画面遷移アニメーション */
+        .page-fade {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col max-w-md mx-auto shadow-2xl border-x border-amber-100 bg-[#FFFDF9]">
+
+    <!-- アプリヘッダー -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-amber-100 px-4 py-3 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl">🍼</span>
+            <div>
+                <h1 class="text-lg font-black text-amber-600 tracking-wide">おやこ保活ナビ</h1>
+                <p class="text-[10px] text-slate-400 font-bold">〇〇市おたすけ版</p>
+            </div>
+        </div>
+        <!-- メニューボタン -->
+        <button id="menuBtn" class="p-2 hover:bg-amber-50 rounded-full transition-colors relative" aria-label="メニューを開く">
+            <i data-lucide="menu" class="w-6 h-6 text-amber-700"></i>
+        </button>
+    </header>
+
+    <!-- サイドナビゲーション（ドロワー） -->
+    <div id="sidebar" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs hidden transition-opacity">
+        <div class="absolute right-0 top-0 bottom-0 w-64 bg-white shadow-xl flex flex-col p-5 animate-slide-in">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-3">
+                <span class="font-bold text-amber-700 flex items-center gap-1">
+                    <i data-lucide="compass" class="w-5 h-5"></i> メニュー
+                </span>
+                <button id="closeSidebar" class="p-1 hover:bg-slate-100 rounded-full">
+                    <i data-lucide="x" class="w-6 h-6 text-slate-500"></i>
+                </button>
+            </div>
+            
+            <nav class="flex flex-col gap-2">
+                <button onclick="switchPage('home')" class="nav-item flex items-center gap-3 p-3 rounded-xl text-left font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">
+                    <i data-lucide="home" class="w-5 h-5"></i> ホーム
+                </button>
+                <button onclick="switchPage('timeline')" class="nav-item flex items-center gap-3 p-3 rounded-xl text-left font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">
+                    <i data-lucide="calendar" class="w-5 h-5"></i> 保活タイムライン
+                </button>
+                <button onclick="switchPage('diagnostic')" class="nav-item flex items-center gap-3 p-3 rounded-xl text-left font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i> あったか状況診断
+                </button>
+                <button onclick="switchPage('chat')" class="nav-item flex items-center gap-3 p-3 rounded-xl text-left font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">
+                    <i data-lucide="message-square" class="w-5 h-5"></i> 3人のAIパートナー
+                </button>
+                <button onclick="switchPage('faq')" class="nav-item flex items-center gap-3 p-3 rounded-xl text-left font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">
+                    <i data-lucide="search" class="w-5 h-5"></i> みんなの知恵袋検索
+                </button>
+            </nav>
+
+            <div class="mt-auto pt-6 border-t border-slate-100 text-center text-xs text-slate-400">
+                <p>保育士さんの負担を減らし、</p>
+                <p>もっと笑顔あふれる街へ 💖</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <main class="flex-1 p-4 overflow-y-auto pb-24">
+
+        <!-- ================= HOME PAGE ================= -->
+        <section id="page-home" class="page-fade space-y-6">
+            <!-- AIキャラ出迎えエリア -->
+            <div class="bg-gradient-to-br from-amber-100 via-orange-50 to-amber-50 rounded-2xl p-5 border border-amber-200/60 shadow-xs relative overflow-hidden">
+                <div class="absolute right-2 bottom-0 w-28 h-28 opacity-25 pointer-events-none">
+                    <span class="text-7xl">🧸</span>
+                </div>
+                <div class="flex gap-4 items-start relative z-10">
+                    <div id="homeCharAvatar" class="w-16 h-16 rounded-full bg-white border-2 border-amber-300 flex items-center justify-center text-3xl shadow-sm">
+                        🌸
+                    </div>
+                    <div class="flex-1">
+                        <span id="homeCharBadge" class="bg-amber-200 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-bold">ベテラン保育士</span>
+                        <h3 id="homeCharName" class="font-bold text-slate-800 text-sm mt-1">めぐみ先生</h3>
+                        <div class="bg-white/80 backdrop-blur-xs rounded-xl p-3 mt-2 text-xs text-slate-700 relative shadow-2xs border border-amber-100">
+                            <div class="absolute left-3 -top-1.5 w-3 h-3 bg-white/80 border-t border-l border-amber-100 rotate-45"></div>
+                            <p id="homeCharSpeech">「おかえりなさい！今月は情報集めの季節よ。焦らず1歩ずつ進めていきましょうね🍀」</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 今月のToDo -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-black text-slate-800 flex items-center gap-2">
+                        <span class="p-1.5 bg-amber-100 rounded-lg text-amber-600">
+                            <i data-lucide="check-square" class="w-4 h-4"></i>
+                        </span>
+                        今月のやること (ToDo)
+                    </h3>
+                    <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-full">6月：準備期</span>
+                </div>
+                <div class="space-y-3">
+                    <label class="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-dashed border-slate-200 cursor-pointer">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded-sm text-amber-500 border-slate-300 focus:ring-amber-400">
+                        <div class="text-xs">
+                            <p class="font-bold text-slate-800">おやこ保活ナビをスマホのホーム画面に追加する</p>
+                            <p class="text-slate-400 text-[10px] mt-0.5">いつでもワンタップで開けるように準備！</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-dashed border-slate-200 cursor-pointer">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded-sm text-amber-500 border-slate-300 focus:ring-amber-400">
+                        <div class="text-xs">
+                            <p class="font-bold text-slate-800">「あったか状況診断」をやってみる</p>
+                            <p class="text-slate-400 text-[10px] mt-0.5">わからない項目があっても全然大丈夫ルン！</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-dashed border-slate-200 cursor-pointer">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded-sm text-amber-500 border-slate-300 focus:ring-amber-400">
+                        <div class="text-xs">
+                            <p class="font-bold text-slate-800">パートナーのキャラクターを選んでみる</p>
+                            <p class="text-slate-400 text-[10px] mt-0.5">下のパートナー切り替えからお気に入りを見つけてね！</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- ショートカットメニュー -->
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="switchPage('diagnostic')" class="p-4 bg-rose-50 hover:bg-rose-100/80 border border-rose-100 rounded-2xl text-left transition-colors">
+                    <span class="text-2xl">🔍</span>
+                    <h4 class="font-black text-rose-800 text-sm mt-2">あったか状況診断</h4>
+                    <p class="text-slate-500 text-[10px] mt-1">「わからない」でも大丈夫。優しくアドバイス！</p>
+                </button>
+                <button onclick="switchPage('timeline')" class="p-4 bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-100 rounded-2xl text-left transition-colors">
+                    <span class="text-2xl">🗺️</span>
+                    <h4 class="font-black text-emerald-800 text-sm mt-2">保活タイムライン</h4>
+                    <p class="text-slate-500 text-[10px] mt-1">診断結果や予定に合わせてやることが変わる！</p>
+                </button>
+            </div>
+
+            <!-- パートナー切り替えミニパネル -->
+            <div class="bg-amber-50/50 rounded-2xl p-4 border border-amber-100">
+                <h4 class="text-xs font-bold text-amber-800 mb-3 text-center">👇 一緒に保活を歩むパートナーを選ぼう！</h4>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="selectPartner('megumi')" class="partner-btn bg-white border border-amber-200 rounded-xl p-2 flex flex-col items-center gap-1 hover:shadow-xs transition-all">
+                        <span class="text-xl">🌸</span>
+                        <span class="text-[10px] font-bold text-slate-700">めぐみ先生</span>
+                    </button>
+                    <button onclick="selectPartner('nashigoro')" class="partner-btn bg-white border border-transparent rounded-xl p-2 flex flex-col items-center gap-1 hover:shadow-xs transition-all">
+                        <span class="text-xl">🦕</span>
+                        <span class="text-[10px] font-bold text-slate-700">ナシゴロウ</span>
+                    </button>
+                    <button onclick="selectPartner('takuya')" class="partner-btn bg-white border border-transparent rounded-xl p-2 flex flex-col items-center gap-1 hover:shadow-xs transition-all">
+                        <span class="text-xl">🧔</span>
+                        <span class="text-[10px] font-bold text-slate-700">タクヤさん</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TIMELINE PAGE ================= -->
+        <section id="page-timeline" class="page-fade space-y-6 hidden">
+            <div class="text-center mb-4">
+                <span class="text-xs font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">保活ナビタイムライン</span>
+                <h2 class="text-lg font-black text-slate-800 mt-2">あなただけの保活ロードマップ</h2>
+                <p class="text-xs text-slate-500 mt-1">予定時期や、診断したあなたのステータスに合わせて変化します！</p>
+            </div>
+
+            <!-- スケジュール時期セレクト（手動カスタマイズ） -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-3">
+                <label class="block text-xs font-black text-slate-700">🗓️ あなたの入園予定シーズンを設定する</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setTimelineSeason('april')" id="season-april" class="season-btn py-2 text-xs font-bold rounded-xl border-2 border-emerald-500 bg-emerald-50/50 text-emerald-800 transition-all">
+                        4月入園(標準)
+                    </button>
+                    <button onclick="setTimelineSeason('midyear')" id="season-midyear" class="season-btn py-2 text-xs font-bold rounded-xl border-2 border-transparent bg-slate-50 text-slate-600 transition-all">
+                        年度の途中入園
+                    </button>
+                    <button onclick="setTimelineSeason('undecided')" id="season-undecided" class="season-btn py-2 text-xs font-bold rounded-xl border-2 border-transparent bg-slate-50 text-slate-600 transition-all">
+                        未定(これから)
+                    </button>
+                </div>
+            </div>
+
+            <!-- 連動：診断連動特別枠（診断するとここに出る） -->
+            <div id="timelineDiagBonus" class="bg-gradient-to-br from-rose-50 to-amber-50 rounded-2xl p-4 border border-rose-100 hidden">
+                <div class="flex items-center gap-2 text-rose-700 font-bold text-xs mb-1">
+                    <span>✨</span><span>診断結果と連動中アドバイス！</span>
+                </div>
+                <p id="timelineDiagBonusText" class="text-xs text-slate-700 leading-relaxed"></p>
+            </div>
+
+            <!-- タイムライン縦軸 -->
+            <div class="relative pl-6 border-l-2 border-emerald-100 ml-4 space-y-8 py-2">
+                <!-- ステップ1 (夏 / 1期) -->
+                <div class="relative">
+                    <span class="absolute -left-[33px] top-0 w-4 h-4 rounded-full bg-emerald-400 border-4 border-white shadow-xs"></span>
+                    <span id="step1-time" class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">夏（6月〜8月）</span>
+                    <h3 id="step1-title" class="font-black text-slate-800 text-sm mt-1">情報収集＆見学のじゅんび</h3>
+                    <p id="step1-desc" class="text-xs text-slate-500 mt-1 leading-relaxed">まずは市のホームページで「入園案内」をチェック！気になる保育園をピックアップして、実際に見学に行くための予定を立てるよ。</p>
+                    <div id="step1-tip" class="mt-2 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100 text-[11px] text-slate-600">
+                        💡 <strong>中高生言葉に翻訳：</strong>「推しメン（候補の園）を探しに現場をのぞきに行く期間」！
+                    </div>
+                </div>
+
+                <!-- ステップ2 (秋 / 2期) -->
+                <div class="relative">
+                    <span class="absolute -left-[33px] top-0 w-4 h-4 rounded-full bg-slate-300 border-4 border-white shadow-xs"></span>
+                    <span id="step2-time" class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">秋（9月〜11月）</span>
+                    <h3 id="step2-title" class="font-black text-slate-800 text-sm mt-1">いよいよ申請書類をあつめる！</h3>
+                    <p id="step2-desc" class="text-xs text-slate-500 mt-1 leading-relaxed">ここが1番手続きの忙しいタイミング。お仕事の証明書（就労証明書）などを会社にもらったり、お役所に出すたくさんの書類を書き進めるよ。</p>
+                    <div id="step2-tip" class="mt-2 bg-slate-50 p-3 rounded-xl border border-slate-200/60 text-[11px] text-slate-600">
+                        📌 <strong>中高生言葉に翻訳：</strong>「提出書類のダンジョン攻略期間」。早めにアイテム（証明書）を揃えよう！
+                    </div>
+                </div>
+
+                <!-- ステップ3 (冬 / 3期) -->
+                <div class="relative">
+                    <span class="absolute -left-[33px] top-0 w-4 h-4 rounded-full bg-slate-300 border-4 border-white shadow-xs"></span>
+                    <span id="step3-time" class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">冬（12月〜2月）</span>
+                    <h3 id="step3-title" class="font-black text-slate-800 text-sm mt-1">結果発表＆入園準備！</h3>
+                    <p id="step3-desc" class="text-xs text-slate-500 mt-1 leading-relaxed">早ければ1月〜2月に合否の結果が届きます。合格したら園の面談を受けたり、お昼寝布団や通園バッグなどのグッズを揃え始めるワクワクドキドキの期間だよ。</p>
+                </div>
+            </div>
+
+            <!-- 自分で設定！やることメモリスト -->
+            <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200/50 space-y-3">
+                <h4 class="font-black text-slate-800 text-xs flex items-center gap-1">
+                    <i data-lucide="edit-3" class="w-4 h-4 text-amber-700"></i>
+                    マイ保活メモ・カスタムToDo 📝
+                </h4>
+                <p class="text-[11px] text-slate-500">見学する園の名前や、自分だけのやることメモを自由に追加してね！</p>
+                
+                <!-- メモ追加フォーム -->
+                <div class="flex gap-2">
+                    <input type="text" id="customTodoInput" placeholder="例: ひまわり保育園の見学予約をする！" class="flex-1 text-xs p-2.5 rounded-xl border border-amber-200 focus:outline-hidden focus:border-amber-400 bg-white">
+                    <button onclick="addCustomTodo()" class="px-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-xs transition-colors shrink-0">
+                        追加
+                    </button>
+                </div>
+
+                <!-- メモリスト表示エリア -->
+                <div id="customTodoList" class="space-y-2 mt-2 max-h-48 overflow-y-auto">
+                    <!-- 初期値 -->
+                    <div class="flex items-center justify-between p-2.5 bg-white/85 rounded-xl border border-amber-100 text-xs">
+                        <span class="text-slate-700">💡 〇〇市役所の保育課の電話番号をメモる</span>
+                        <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-rose-500">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= DIAGNOSTIC PAGE ================= -->
+        <section id="page-diagnostic" class="page-fade space-y-6 hidden">
+            <div class="text-center">
+                <span class="text-xs font-black text-rose-600 bg-rose-50 px-3 py-1 rounded-full">おやこ診断</span>
+                <h2 class="text-lg font-black text-slate-800 mt-2">あったか状況診断</h2>
+                <p class="text-xs text-slate-500 mt-1">冷たい点数制度を、あったかい言葉でアドバイス！</p>
+            </div>
+
+            <!-- 診断フォーム -->
+            <div id="diagnosticForm" class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-4">
+                <!-- 質問1 -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-2">Q1. 4月に入園するときの赤ちゃんの月齢（年齢）は？</label>
+                    <select id="diagAge" class="w-full text-xs p-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-hidden focus:border-amber-400">
+                        <option value="0">0歳児（生まれて数ヶ月〜1歳未満）</option>
+                        <option value="1">1歳児（動きが活発になる1〜2歳）</option>
+                        <option value="2">2歳児以上</option>
+                        <option value="unknown">わからない・まだ生まれていない</option>
+                    </select>
+                </div>
+
+                <!-- 質問2 -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-2">Q2. パパ・ママの働き方はどうなりそう？</label>
+                    <select id="diagWork" class="w-full text-xs p-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-hidden focus:border-amber-400">
+                        <option value="full">夫婦ともにフルタイム（週5日・1日8時間など）</option>
+                        <option value="part">時短勤務・パート・求職中など</option>
+                        <option value="unknown">まだ決まっていない・わからない</option>
+                    </select>
+                </div>
+
+                <!-- 質問3 -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-2">Q3. ご近所に、子育てをすぐ頼める実家などはある？</label>
+                    <select id="diagFamily" class="w-full text-xs p-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-hidden focus:border-amber-400">
+                        <option value="far">遠くにあって頼りにくい（または頼れない）</option>
+                        <option value="near">近くにあって、よく面倒をみてもらえる</option>
+                        <option value="unknown">わからない・状況が変わるかも</option>
+                    </select>
+                </div>
+
+                <button onclick="runDiagnostic()" class="w-full py-3 bg-amber-500 hover:bg-amber-600 active:scale-98 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    診断結果を見る
+                </button>
+            </div>
+
+            <!-- 診断結果表示エリア（最初は非表示） -->
+            <div id="diagnosticResult" class="hidden bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-5 border border-amber-200 shadow-xs space-y-4">
+                <div class="flex justify-between items-center border-b border-amber-200 pb-3">
+                    <h3 class="font-black text-amber-900 text-sm flex items-center gap-1">
+                        <i data-lucide="award" class="w-4 h-4"></i> あなたにおすすめの作戦
+                    </h3>
+                    <button onclick="resetDiagnostic()" class="text-xs text-amber-700 font-bold hover:underline">やり直す</button>
+                </div>
+
+                <!-- 診断スコア＆テキスト -->
+                <div class="space-y-3">
+                    <div class="bg-white/80 p-4 rounded-xl border border-amber-100">
+                        <div class="flex items-center gap-2 text-amber-700 font-bold text-xs mb-1">
+                            <span>📋</span> 診断結果ステータス
+                        </div>
+                        <p id="diagStatus" class="font-black text-slate-800 text-sm leading-relaxed"></p>
+                    </div>
+
+                    <div class="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
+                        <div class="flex items-center gap-2 text-rose-700 font-bold text-xs mb-1">
+                            <span>💝</span> めぐみ先生からのあったか応援
+                        </div>
+                        <p id="diagAdvice" class="text-xs text-slate-600 leading-relaxed"></p>
+                    </div>
+
+                    <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
+                        <div class="flex items-center gap-2 text-emerald-700 font-bold text-xs mb-1">
+                            <span>📄</span> 必要な手続き書類セット
+                        </div>
+                        <ul id="diagDocs" class="list-disc list-inside text-xs text-slate-600 space-y-1 pl-1"></ul>
+                    </div>
+                </div>
+
+                <!-- タイムラインへ遷移するための誘導ボタン -->
+                <button onclick="switchPage('timeline')" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors">
+                    <i data-lucide="arrow-right-circle" class="w-4 h-4"></i>
+                    この診断をタイムライン（ロードマップ）に反映する！
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= CHAT PAGE ================= -->
+        <section id="page-chat" class="page-fade flex flex-col h-[calc(100vh-140px)] hidden">
+            <!-- パートナー選択ヘッダー -->
+            <div class="bg-white border border-slate-100 rounded-2xl p-3 mb-3 shadow-xs">
+                <div class="flex justify-around">
+                    <button onclick="selectPartnerChat('megumi')" id="chatTab-megumi" class="flex flex-col items-center gap-1 p-2 rounded-xl border-2 border-amber-400 bg-amber-50/50 transition-all">
+                        <span class="text-2xl">🌸</span>
+                        <span class="text-[10px] font-bold text-slate-800">めぐみ先生</span>
+                    </button>
+                    <button onclick="selectPartnerChat('nashigoro')" id="chatTab-nashigoro" class="flex flex-col items-center gap-1 p-2 rounded-xl border-2 border-transparent transition-all">
+                        <span class="text-2xl">🦕</span>
+                        <span class="text-[10px] font-bold text-slate-600">ナシゴロウ</span>
+                    </button>
+                    <button onclick="selectPartnerChat('takuya')" id="chatTab-takuya" class="flex flex-col items-center gap-1 p-2 rounded-xl border-2 border-transparent transition-all">
+                        <span class="text-2xl">🧔</span>
+                        <span class="text-[10px] font-bold text-slate-600">タクヤさん</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- チャット履歴エリア -->
+            <div id="chatHistory" class="flex-1 overflow-y-auto space-y-4 p-2 bg-slate-50/50 rounded-2xl border border-slate-100 mb-3 min-h-[250px]">
+                <!-- 初期のメッセージをJSで注入します -->
+            </div>
+
+            <!-- よくある質問ショートカットタグ -->
+            <div class="flex gap-2 overflow-x-auto pb-2 shrink-0">
+                <button onclick="sendQuickMessage('いつから動けばいいの？')" class="shrink-0 bg-amber-100 hover:bg-amber-200 text-amber-800 text-[10px] font-bold px-3 py-1.5 rounded-full transition-colors">
+                    🕒 いつから動けばいい？
+                </button>
+                <button onclick="sendQuickMessage('見学って何を見るの？')" class="shrink-0 bg-amber-100 hover:bg-amber-200 text-amber-800 text-[10px] font-bold px-3 py-1.5 rounded-full transition-colors">
+                    🔍 見学のポイント
+                </button>
+                <button onclick="sendQuickMessage('加点ってどうやったらつくの？')" class="shrink-0 bg-amber-100 hover:bg-amber-200 text-amber-800 text-[10px] font-bold px-3 py-1.5 rounded-full transition-colors">
+                    ⭐ 点数を上げるコツは？
+                </button>
+            </div>
+
+            <!-- 送信フォーム -->
+            <form id="chatForm" class="flex gap-2 shrink-0">
+                <input type="text" id="chatInput" placeholder="パートナーに質問してみよう..." class="flex-1 text-xs p-3 rounded-xl border border-slate-200 bg-white focus:outline-hidden focus:border-amber-400 shadow-2xs">
+                <button type="submit" class="p-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl shadow-xs active:scale-95 transition-all">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                </button>
+            </form>
+        </section>
+
+        <!-- ================= FAQ PAGE ================= -->
+        <section id="page-faq" class="page-fade space-y-6 hidden">
+            <div class="text-center">
+                <span class="text-xs font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-full">みんなの知恵袋</span>
+                <h2 class="text-lg font-black text-slate-800 mt-2">キーワードで解決！検索検索🔍</h2>
+                <p class="text-xs text-slate-500 mt-1">先輩パパママや保育士さんが疑問に優しく回答！</p>
+            </div>
+
+            <!-- 検索窓 -->
+            <div class="relative">
+                <input type="text" id="faqSearchInput" oninput="filterFaqs()" placeholder="例：見学、点数、書類、お金..." class="w-full text-xs p-4 pl-11 rounded-2xl border border-slate-200 bg-white focus:outline-hidden focus:border-amber-400 shadow-xs">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </span>
+            </div>
+
+            <!-- 知恵袋リスト -->
+            <div id="faqList" class="space-y-3">
+                <!-- 知恵袋カード 1 -->
+                <div class="faq-item bg-white p-4 rounded-xl border border-slate-100 shadow-2xs" data-keywords="けんがく 見学 園選び 選び方">
+                    <div class="flex items-start gap-2 mb-2">
+                        <span class="bg-rose-100 text-rose-800 text-[9px] font-bold px-2 py-0.5 rounded-full shrink-0">Q. 園選び</span>
+                        <h4 class="font-bold text-slate-800 text-xs">見学って1人で行っても大丈夫？パートナーと行くべき？</h4>
+                    </div>
+                    <div class="bg-amber-50/50 p-3 rounded-lg border border-amber-100/50">
+                        <p class="text-[11px] text-slate-600 leading-relaxed">
+                            <strong>めぐみ先生の回答:</strong> もちろんお一人でも大丈夫ですよ！でも、夫婦で見に行くと「パパ目線」「ママ目線」の違う角度でチェックできるので、可能なら日程を合わせるのもおすすめです。園の登下校ルートを実際に歩くのも大事なポイントね。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 知恵袋カード 2 -->
+                <div class="faq-item bg-white p-4 rounded-xl border border-slate-100 shadow-2xs" data-keywords="てんすう 点数 加点 計算">
+                    <div class="flex items-start gap-2 mb-2">
+                        <span class="bg-emerald-100 text-emerald-800 text-[9px] font-bold px-2 py-0.5 rounded-full shrink-0">Q. 点数について</span>
+                        <h4 class="font-bold text-slate-800 text-xs">両親フルタイムでも落ちるってホント？</h4>
+                    </div>
+                    <div class="bg-amber-50/50 p-3 rounded-lg border border-amber-100/50">
+                        <p class="text-[11px] text-slate-600 leading-relaxed">
+                            <strong>タクヤさんの回答:</strong> 正直、人気の1歳児クラスとかだとフルタイム同士でも激戦になることがあるよ。でも、「駅から少し離れた園」や「新しくオープンする園」を候補に入れると、すんなり入れたりします。あきらめずに視野を広げてみよう！
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 知恵袋カード 3 -->
+                <div class="faq-item bg-white p-4 rounded-xl border border-slate-100 shadow-2xs" data-keywords="しょるい 書類 就労証明書 会社">
+                    <div class="flex items-start gap-2 mb-2">
+                        <span class="bg-purple-100 text-purple-800 text-[9px] font-bold px-2 py-0.5 rounded-full shrink-0">Q. 必要書類</span>
+                        <h4 class="font-bold text-slate-800 text-xs">就労証明書って会社に頼んでからどれくらいで貰える？</h4>
+                    </div>
+                    <div class="bg-amber-50/50 p-3 rounded-lg border border-amber-100/50">
+                        <p class="text-[11px] text-slate-600 leading-relaxed">
+                            <strong>ナシゴロウの回答:</strong> 会社の規模にもよるけど、大体1〜2週間かかることが多いルン！秋の申請シーズンはみんなが一斉に頼むから、もっと時間がかかることもあるルン。9月に入ったらすぐに会社の人事担当に声をかけるとスムーズルン！
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- フッターナビゲーション（タブバー） -->
+    <footer class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-amber-100 grid grid-cols-5 py-2 px-1 shadow-lg z-40">
+        <button onclick="switchPage('home')" id="tab-home" class="flex flex-col items-center gap-1 py-1 text-amber-500 font-bold transition-all">
+            <i data-lucide="home" class="w-5 h-5"></i>
+            <span class="text-[9px]">ホーム</span>
+        </button>
+        <button onclick="switchPage('timeline')" id="tab-timeline" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-amber-500 font-bold transition-all">
+            <i data-lucide="calendar" class="w-5 h-5"></i>
+            <span class="text-[9px]">ロードマップ</span>
+        </button>
+        <button onclick="switchPage('diagnostic')" id="tab-diagnostic" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-amber-500 font-bold transition-all">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+            <span class="text-[9px]">状況診断</span>
+        </button>
+        <button onclick="switchPage('chat')" id="tab-chat" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-amber-500 font-bold transition-all">
+            <i data-lucide="message-square" class="w-5 h-5"></i>
+            <span class="text-[9px]">相談AI</span>
+        </button>
+        <button onclick="switchPage('faq')" id="tab-faq" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-amber-500 font-bold transition-all">
+            <i data-lucide="search" class="w-5 h-5"></i>
+            <span class="text-[9px]">知恵袋</span>
+        </button>
+    </footer>
+
+    <!-- スクリプト -->
+    <script>
+        // AIパートナー情報データ
+        const partners = {
+            megumi: {
+                name: "めぐみ先生",
+                role: "ベテラン保育士",
+                avatar: "🌸",
+                speech: "「おかえりなさい！今月は情報集めの季節よ。焦らず1歩ずつ進めていきましょうね🍀」",
+                welcomeChat: "こんにちは！めぐみです。初めての保活、不安なこともたくさんあるわよね。どんな小さなことでも私に聞いてね。あなたの味方よ！",
+                responses: [
+                    "見学に行くときは、先生たちが子どもたちにどんな表情で接しているかを見てみるといいわよ！笑顔が多い園は安心よね😊",
+                    "書類集めは最初はパニックになるけれど、1つずつクリアしていけば大丈夫。まずは『就労証明書』から始めてみましょう！",
+                    "保育園に通い始めると、最初は熱を出すことも多いけれど、園のスタッフもしっかりサポートするからね。安心して大丈夫よ。"
+                ]
+            },
+            nashigoro: {
+                name: "ナシゴロウ",
+                role: "市のゆるキャラ",
+                avatar: "🦕",
+                speech: "「おつかれさまだルン！〇〇市の保育園情報はぼくに何でもきいてルン！」",
+                welcomeChat: "〇〇市公認ゆるキャラのナシゴロウだルン！保活はちょっぴり難しい言葉が多いけど、ぼくがわかりやすく説明するルン！よろしくルン♪",
+                responses: [
+                    "〇〇市のホームページに載っている『保育園のしおり』はもうダウンロードしたルン？まずはそこからスタートだルン！",
+                    "秋の申請シーズンは、窓口がとっても混雑するルン。ネットで申請できる「電子申請」を使うと、おうちからでも出せて楽ちんだルン！",
+                    "点数が足りるか心配な時は、駅から少し離れたエリアの園や、小規模保育園も選択肢に入れてみると良いルン！おすすめだルン！"
+                ]
+            },
+            takuya: {
+                name: "タクヤさん",
+                role: "先輩パパ（失敗から学ぶ男）",
+                avatar: "🧔",
+                speech: "「お疲れさま！俺は書類の提出期限ギリギリで超焦ったから、みんなには早く動いてほしいな(笑)」",
+                welcomeChat: "お疲れさまです！先輩パパのタクヤです。いや〜、俺は保活のとき、書類の準備をなめすぎてて会社に証明書もらうのが遅れて大慌てしたんだよね(笑)。みんなにはそんな失敗してほしくないから、実体験ベースで色々答えるよ！",
+                responses: [
+                    "見学に行くときは、ベビーカーの置き場があるかとか、駐輪場があるかも絶対見ておいたほうがいいよ！毎日の送り迎えのリアルに関わるからね。",
+                    "夫婦で『保活の分担』をあらかじめ決めておくの、超大事！うちはこれで喧嘩しかけた(笑)。書類担当、園見学担当とか分けるとスムーズだよ！",
+                    "希望の保育園は、第三希望・第四希望まで妥協せずにしっかり書くのがコツだよ。思わぬ良い園が見つかることもあるからね！"
+                ]
+            }
+        };
+
+        let currentPartner = 'megumi';
+        const apiKey = ""; // APIキーは空で起動、環境から自動付与されます
+
+        // タイムライン設定管理
+        let currentSeason = 'april';
+
+        // DOM要素の読み込み完了時
+        window.onload = function() {
+            // Lucideアイコンの初期化
+            lucide.createIcons();
+            
+            // サイドバー制御
+            const menuBtn = document.getElementById('menuBtn');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebar = document.getElementById('sidebar');
+
+            menuBtn.addEventListener('click', () => {
+                sidebar.classList.remove('hidden');
+            });
+
+            closeSidebar.addEventListener('click', () => {
+                sidebar.classList.add('hidden');
+            });
+
+            sidebar.addEventListener('click', (e) => {
+                if (e.target === sidebar) {
+                    sidebar.classList.add('hidden');
+                }
+            });
+
+            // チャット初期化
+            initChat();
+
+            // チャットフォーム送信
+            document.getElementById('chatForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                sendChatMessage();
+            });
+        };
+
+        // ページ切り替え処理 (Single Page Application風)
+        function switchPage(pageId) {
+            // すべてのページセクションを非表示にする
+            const pages = ['home', 'timeline', 'diagnostic', 'chat', 'faq'];
+            pages.forEach(p => {
+                document.getElementById(`page-${p}`).classList.add('hidden');
+                // タブボタンのアクティブクラスを解除
+                const tab = document.getElementById(`tab-${p}`);
+                if (tab) {
+                    tab.classList.remove('text-amber-500');
+                    tab.classList.add('text-slate-400');
+                }
+            });
+
+            // 指定されたページを表示
+            document.getElementById(`page-${pageId}`).classList.remove('hidden');
+            
+            // タブのアクティブクラスを設定
+            const activeTab = document.getElementById(`tab-${pageId}`);
+            if (activeTab) {
+                activeTab.classList.add('text-amber-500');
+                activeTab.classList.remove('text-slate-400');
+            }
+
+            // サイドバーを閉じる
+            document.getElementById('sidebar').classList.add('hidden');
+            
+            // アイコン再描画
+            lucide.createIcons();
+        }
+
+        // ホーム画面でのパートナー切り替え
+        function selectPartner(partnerId) {
+            currentPartner = partnerId;
+            const partner = partners[partnerId];
+
+            // 1. ホーム画面の表示を更新
+            document.getElementById('homeCharAvatar').innerText = partner.avatar;
+            document.getElementById('homeCharBadge').innerText = partner.role;
+            document.getElementById('homeCharName').innerText = partner.name;
+            document.getElementById('homeCharSpeech').innerText = partner.speech;
+
+            // 2. ミニパネルのボタン枠線スタイルを更新
+            const buttons = document.querySelectorAll('.partner-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('border-amber-200');
+                btn.classList.add('border-transparent');
+            });
+            event.currentTarget.classList.remove('border-transparent');
+            event.currentTarget.classList.add('border-amber-200');
+
+            // 3. チャット画面もこのパートナーに合わせる
+            selectPartnerChat(partnerId);
+        }
+
+        // チャット画面でのパートナー切り替え
+        function selectPartnerChat(partnerId) {
+            currentPartner = partnerId;
+            const keys = ['megumi', 'nashigoro', 'takuya'];
+            
+            keys.forEach(k => {
+                const tab = document.getElementById(`chatTab-${k}`);
+                if (k === partnerId) {
+                    tab.classList.add('border-amber-400', 'bg-amber-50/50');
+                    tab.classList.remove('border-transparent');
+                } else {
+                    tab.classList.remove('border-amber-400', 'bg-amber-50/50');
+                    tab.classList.add('border-transparent');
+                }
+            });
+
+            // チャット履歴のリセットと初期化
+            initChat();
+        }
+
+        // チャット画面の初期化
+        function initChat() {
+            const partner = partners[currentPartner];
+            const chatHistory = document.getElementById('chatHistory');
+            chatHistory.innerHTML = `
+                <div class="flex gap-2 items-start page-fade">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-lg shrink-0">
+                        ${partner.avatar}
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl rounded-tl-xs border border-slate-100 max-w-[80%]">
+                        <p class="text-xs font-bold text-amber-700 text-[10px] mb-0.5">${partner.name}</p>
+                        <p class="text-xs text-slate-700 leading-relaxed">${partner.welcomeChat}</p>
+                    </div>
+                </div>
+            `;
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // 状況診断の実行
+        function runDiagnostic() {
+            const age = document.getElementById('diagAge').value;
+            const work = document.getElementById('diagWork').value;
+            const family = document.getElementById('diagFamily').value;
+
+            let status = "";
+            let advice = "";
+            let docs = [];
+            let bonusTimelineMsg = "";
+
+            // --- 新規追加：「わからない」選択への寄り添いルート ---
+            if (age === 'unknown' || work === 'unknown' || family === 'unknown') {
+                status = "「まずは一安心！これからゆっくり準備する状態」";
+                advice = "まだ決まっていないことがあっても全然大丈夫よ！むしろ、このサイトに出会えた時点で保活のスタートは完璧です。これからご自身のライフプランに合わせて「どうしたいか」を少しずつ決めていきましょう。まずは市のホームページなどで園の雰囲気を見ることから始めましょうね🍀";
+                docs = [
+                    "保育園のご案内パンフレット（まずは情報収集！）",
+                    "あなたの『こう働きたいな』のメモ書き"
+                ];
+                bonusTimelineMsg = "診断ではまだ「わからないこと」があったね！それならまずは【情報収集】の期間をたっぷり取るのがおすすめ。タイムラインの「夏〜秋」に合わせて、近くの園をのんびり散歩がてら見に行ってみよう！";
+            } 
+            // --- 既存の回答分岐 ---
+            else if (work === 'full') {
+                status = "「両親フルタイム」で、保活の基本点数は満点クラス！";
+                advice = "ベースの点数は非常に高いので、第一希望の園を狙う大チャンス！ただし人気の1歳児クラスは希望者が殺到するから、お家から通える範囲で第3希望くらいまで幅広く候補を探しておくのが最高の保活作戦よ。";
+                docs = [
+                    "保育利用申込書 (全員必須)",
+                    "お仕事先の就労証明書 (パパ・ママ双方分)",
+                    "マイナンバーを確認できる書類"
+                ];
+                bonusTimelineMsg = "フルタイムのお仕事との両立、本当に頭が下がります！タイムラインの【秋】に、会社へ就労証明書の発行を依頼することを忘れないよう、カレンダーに登録しておきましょう！";
+            } else {
+                status = "「時短・パート・求職中など」少し調整が必要な状態かも！";
+                advice = "焦らなくて大丈夫！点数は少し低めになるかもしれないけれど、『小規模保育園』や『駅から少し離れたアットホームな園』を候補に入れたり、一時預かりサービスを活用して加点（ボーナス点）を狙うのがおすすめの作戦だよ。";
+                docs = [
+                    "保育利用申込書 (全員必須)",
+                    "就労証明書、または求職活動報告書など",
+                    "その他状況を証明できる書類"
+                ];
+                bonusTimelineMsg = "少し点数の調整が必要なあなたには、タイムラインの【夏〜秋】にかけて、認可外保育園や小規模保育園の「見学」を多めにしておくのが最強のバックアップ作戦になります！";
+            }
+
+            // 実家サポート情報の追加
+            if (family === 'far') {
+                advice += " 近所に頼れる実家がない場合は、一部の地域で加点対象（調整指数）になることもあります。大変ですが、しっかりアピールしていきましょう！";
+            } else if (family === 'near') {
+                advice += " 近くにおじいちゃん・おばあちゃんがいると安心感がありますね。申請時にはその旨も正確に記載しましょう。";
+            }
+
+            // 診断結果を画面に反映
+            document.getElementById('diagStatus').innerText = status;
+            document.getElementById('diagAdvice').innerText = advice;
+            
+            const docsUl = document.getElementById('diagDocs');
+            docsUl.innerHTML = "";
+            docs.forEach(doc => {
+                const li = document.createElement('li');
+                li.innerText = doc;
+                docsUl.appendChild(li);
+            });
+
+            // タイムライン画面用の隠しデータをセット
+            document.getElementById('timelineDiagBonus').classList.remove('hidden');
+            document.getElementById('timelineDiagBonusText').innerText = bonusTimelineMsg;
+
+            // 表示の切り替え
+            document.getElementById('diagnosticForm').classList.add('hidden');
+            document.getElementById('diagnosticResult').classList.remove('hidden');
+            
+            // アイコン再読み込み
+            lucide.createIcons();
+        }
+
+        // 状況診断のやり直し
+        function resetDiagnostic() {
+            document.getElementById('diagnosticForm').classList.remove('hidden');
+            document.getElementById('diagnosticResult').classList.add('hidden');
+        }
+
+        // タイムラインのシーズン手動設定
+        function setTimelineSeason(season) {
+            currentSeason = season;
+
+            // ボタンのアクティブ状態のトグル
+            const seasons = ['april', 'midyear', 'undecided'];
+            seasons.forEach(s => {
+                const btn = document.getElementById(`season-${s}`);
+                if (s === season) {
+                    btn.classList.add('border-emerald-500', 'bg-emerald-50/50', 'text-emerald-800');
+                    btn.classList.remove('border-transparent', 'bg-slate-50', 'text-slate-600');
+                } else {
+                    btn.classList.remove('border-emerald-500', 'bg-emerald-50/50', 'text-emerald-800');
+                    btn.classList.add('border-transparent', 'bg-slate-50', 'text-slate-600');
+                }
+            });
+
+            // タイムラインの内容を書き換え
+            const step1_time = document.getElementById('step1-time');
+            const step1_title = document.getElementById('step1-title');
+            const step1_desc = document.getElementById('step1-desc');
+            const step1_tip = document.getElementById('step1-tip');
+
+            const step2_time = document.getElementById('step2-time');
+            const step2_title = document.getElementById('step2-title');
+            const step2_desc = document.getElementById('step2-desc');
+            const step2_tip = document.getElementById('step2-tip');
+
+            const step3_time = document.getElementById('step3-time');
+            const step3_title = document.getElementById('step3-title');
+            const step3_desc = document.getElementById('step3-desc');
+
+            if (season === 'april') {
+                step1_time.innerText = "夏（6月〜8月）";
+                step1_time.className = "text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md";
+                step1_title.innerText = "情報収集＆見学のじゅんび";
+                step1_desc.innerText = "まずは市のホームページで「入園案内」をチェック！気になる保育園をピックアップして、実際に見学に行くための予定を立てるよ。";
+                step1_tip.innerHTML = "💡 <strong>中高生言葉：</strong>「推しメン（候補の園）を探しに現場をのぞきに行く期間」！";
+
+                step2_time.innerText = "秋（9月〜11月）";
+                step2_time.className = "text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md";
+                step2_title.innerText = "いよいよ申請書類をあつめる！";
+                step2_desc.innerText = "ここが1番手続きの忙しいタイミング。お仕事の証明書（就労証明書）などを会社にもらったり、お役所に出すたくさんの書類を書き進めるよ。";
+                step2_tip.innerHTML = "📌 <strong>中高生言葉：</strong>「提出書類のダンジョン攻略期間」。早めにアイテム（証明書）を揃えよう！";
+
+                step3_time.innerText = "冬（12月〜2月）";
+                step3_time.className = "text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md";
+                step3_title.innerText = "結果発表＆入園準備！";
+                step3_desc.innerText = "早ければ1月〜2月に合否の結果が届きます。合格したら園の面談を受けたり、お昼寝布団や通園バッグなどのグッズを揃え始めるワクワクドキドキの期間だよ。";
+            } 
+            else if (season === 'midyear') {
+                step1_time.innerText = "入園の「3ヶ月前」";
+                step1_time.className = "text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md";
+                step1_title.innerText = "途中の空き状況を毎日チェック";
+                step1_desc.innerText = "途中入園（5月〜3月入園）は空きが出ないと入れません。毎月1日頃に市役所のHPで更新される「定員空き情報」をこまめにチェックして、チャンスを狙おう！";
+                step1_tip.innerHTML = "💡 <strong>中高生言葉：</strong>「キャンセル待ちのチケットを毎日スマホでリロードする感覚」！";
+
+                step2_time.innerText = "入園の「1〜2ヶ月前」";
+                step2_time.className = "text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md";
+                step2_title.innerText = "速攻で書類を書いて市役所へ！";
+                step2_desc.innerText = "途中入園は申し込みの締め切りが毎月設定（例：前月10日締め切りなど）されています。急に空きが出てもすぐ出せるように、事前に書類一式を書いて手元に置いておくのがコツです。";
+                step2_tip.innerHTML = "📌 <strong>中高生言葉：</strong>「突然のゲリラライブ告知にも対応できる万全のフル装備」をしておこう！";
+
+                step3_time.innerText = "入園の「前月」";
+                step3_time.className = "text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md";
+                step3_title.innerText = "内定発表＆クイック準備！";
+                step3_desc.innerText = "入園決定の連絡が来たら、すぐに園と面談をして必要な持ち物を準備します。途中入園は決まってから登園までの期間が短いので、お布団など基本アイテムは事前に調べておきましょう。";
+            } 
+            else if (season === 'undecided') {
+                step1_time.innerText = "ステップ 1：いつでも";
+                step1_time.className = "text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md";
+                step1_title.innerText = "まずは近所の園を調べる（ゆる保活）";
+                step1_desc.innerText = "時期が決まっていないなら、焦る必要は全くありません！お散歩の途中に「あ、ここに保育園があるんだな」と眺めるだけでも立派な一歩です。通いやすそうな場所をなんとなく頭に入れておきましょう。";
+                step1_tip.innerHTML = "💡 <strong>中高生言葉：</strong>「まずは街歩きしながら、美味しそうなタピオカ屋の場所をストックしておく感覚」！";
+
+                step2_time.innerText = "ステップ 2：入園を考え始めたら";
+                step2_time.className = "text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md";
+                step2_title.innerText = "市役所に行って、しおりを貰ってくる";
+                step2_desc.innerText = "「そろそろ預けようかな」と思ったら、市役所の保育課（またはオンライン）で最新のパンフレット（しおり）を手に入れましょう。これ1冊に全てのルールが書いてあります！";
+                step2_tip.innerHTML = "📌 <strong>中高生言葉：</strong>「いよいよ本格的なゲームを始めるための公式攻略本（ガイドブック）を入手する」！";
+
+                step3_time.innerText = "ステップ 3：入園目標の決定";
+                step3_time.className = "text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md";
+                step3_title.innerText = "目標時期をセットする";
+                step3_desc.innerText = "しおりを読んで、「4月からにするか」「途中からにするか」を決めたら、上のボタンでカチッと予定を切り替えてみてね。その時期に合わせた専用スケジュールに早変わりするよ！";
+            }
+        }
+
+        // マイToDoにカスタム項目を追加
+        function addCustomTodo() {
+            const input = document.getElementById('customTodoInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const list = document.getElementById('customTodoList');
+            
+            const itemHtml = `
+                <div class="flex items-center justify-between p-2.5 bg-white/85 rounded-xl border border-amber-100 text-xs page-fade">
+                    <span class="text-slate-700">📌 ${text}</span>
+                    <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-rose-500">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `;
+            
+            list.insertAdjacentHTML('afterbegin', itemHtml);
+            input.value = "";
+            
+            // アイコン再描画
+            lucide.createIcons();
+        }
+
+        // チャットでのメッセージ送信
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const messageText = input.value.trim();
+            if (!messageText) return;
+
+            input.value = "";
+            appendMessage('user', messageText);
+
+            // ローディングインジケーターの追加
+            const loadingId = appendLoadingMessage();
+
+            // Gemini API の呼び出し試行、失敗時はローカルのプリセット返答
+            try {
+                const partner = partners[currentPartner];
+                let responseText = "";
+
+                if (apiKey) {
+                    // APIキーがある場合は実際にAIに問い合わせ
+                    const systemPrompt = `あなたは保活アドバイザーの「${partner.name}」です。肩書きは「${partner.role}」です。
+ユーザーは保育園に入園させたい親御さんです。初めての経験で不安を抱えています。
+相手が安心できるように、温かく、かつ中高生でも直感的に理解できるくらい噛み砕いた「〇〇市のおたすけ情報」風の言葉で寄り添って答えてください。
+ナシゴロウの場合は語尾に必ず「〜ルン！」をつけて、お茶目に回答してください。
+タクヤさんの場合は、少し失敗談やフランクなパパ目線の言葉を交えて答えてください。`;
+                    
+                    responseText = await callGeminiAPI(messageText, systemPrompt);
+                } else {
+                    // APIキーがない場合の模擬回答（少しディレイをいれる）
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    const randomIndex = Math.floor(Math.random() * partner.responses.length);
+                    responseText = partner.responses[randomIndex];
+                }
+
+                removeLoadingMessage(loadingId);
+                appendMessage('partner', responseText);
+            } catch (error) {
+                removeLoadingMessage(loadingId);
+                appendMessage('partner', "ゴメンね、ちょっと頭が混乱しちゃったルン！もう一回聞いてみてね。");
+            }
+        }
+
+        // クイック質問ボタンの処理
+        function sendQuickMessage(text) {
+            document.getElementById('chatInput').value = text;
+            sendChatMessage();
+        }
+
+        // メッセージを画面に追記する
+        function appendMessage(sender, text) {
+            const chatHistory = document.getElementById('chatHistory');
+            const partner = partners[currentPartner];
+
+            let messageHtml = "";
+            if (sender === 'user') {
+                messageHtml = `
+                    <div class="flex gap-2 items-start justify-end page-fade">
+                        <div class="bg-amber-500 text-white p-3 rounded-2xl rounded-tr-xs max-w-[80%] text-xs shadow-2xs">
+                            <p class="leading-relaxed">${text}</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageHtml = `
+                    <div class="flex gap-2 items-start page-fade">
+                        <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-lg shrink-0">
+                            ${partner.avatar}
+                        </div>
+                        <div class="bg-white p-3 rounded-2xl rounded-tl-xs border border-slate-100 max-w-[80%]">
+                            <p class="text-xs font-bold text-amber-700 text-[10px] mb-0.5">${partner.name}</p>
+                            <p class="text-xs text-slate-700 leading-relaxed">${text}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            chatHistory.insertAdjacentHTML('beforeend', messageHtml);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // ローディング（入力中...）の表示
+        function appendLoadingMessage() {
+            const chatHistory = document.getElementById('chatHistory');
+            const partner = partners[currentPartner];
+            const uniqueId = "loading-" + Date.now();
+
+            const loadingHtml = `
+                <div id="${uniqueId}" class="flex gap-2 items-start page-fade">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-lg shrink-0">
+                        ${partner.avatar}
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl rounded-tl-xs border border-slate-100 max-w-[80%]">
+                        <div class="flex gap-1 items-center justify-center py-1">
+                            <span class="w-2 h-2 bg-slate-300 rounded-full animate-bounce"></span>
+                            <span class="w-2 h-2 bg-slate-300 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                            <span class="w-2 h-2 bg-slate-300 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatHistory.insertAdjacentHTML('beforeend', loadingHtml);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            return uniqueId;
+        }
+
+        function removeLoadingMessage(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // 知恵袋のリアルタイムキーワード検索
+        function filterFaqs() {
+            const query = document.getElementById('faqSearchInput').value.toLowerCase();
+            const items = document.querySelectorAll('.faq-item');
+
+            items.forEach(item => {
+                const keywords = item.getAttribute('data-keywords').toLowerCase();
+                const text = item.innerText.toLowerCase();
+
+                if (keywords.includes(query) || text.includes(query)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        // Gemini API 呼び出し (指数バックオフ対応)
+        async function callGeminiAPI(promptText, systemPrompt) {
+            const maxRetries = 5;
+            let delay = 1000;
+
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: promptText }] }],
+                            systemInstruction: { parts: [{ text: systemPrompt }] }
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "ちょっと聞き取れなかったルン！";
+                } catch (error) {
+                    if (i === maxRetries - 1) throw error;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2; // 指数バックオフ
+                }
+            }
+        }
+    </script>
+</body>
+</html>
